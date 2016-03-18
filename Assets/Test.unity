@@ -116,10 +116,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4e49e746ed196945ad0316d0fb43536, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _encoding: 2
-  _gradientType: 0
+  _gradientType: 2
   _bufferScale: .5
-  _amplify: 244
+  _amplify: 2
   _shader: {fileID: 4800000, guid: 3e1f83042ddd1ba428dfaa02042789d6, type: 3}
 --- !u!81 &702610716
 AudioListener:

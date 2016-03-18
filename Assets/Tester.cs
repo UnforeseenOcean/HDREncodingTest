@@ -3,11 +3,6 @@
 [ExecuteInEditMode]
 public class Tester : MonoBehaviour
 {
-    public enum Encoding { None, RGBM, RGBD }
-
-    [SerializeField]
-    Encoding _encoding;
-
     [SerializeField, Range(0, 2)]
     int _gradientType;
 
@@ -40,29 +35,24 @@ public class Tester : MonoBehaviour
         else
             _material.EnableKeyword("_GRADIENT3");
 
-        if (_encoding == Encoding.RGBM)
-            _material.EnableKeyword("_RGBM");
-        else if (_encoding == Encoding.RGBD)
-            _material.EnableKeyword("_RGBD");
-        else
-        {
-            Graphics.Blit(null, destination, _material, 1);
-            return;
-        }
-
         var tw = (int)(source.width  * _bufferScale);
         var th = (int)(source.height * _bufferScale);
 
-        var rtLDR = RenderTexture.GetTemporary(tw, th, 0, RenderTextureFormat.Default);
-        var rtHDR = RenderTexture.GetTemporary(tw, th, 0, RenderTextureFormat.DefaultHDR);
+        var rtHDR  = RenderTexture.GetTemporary(tw, th, 0, RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear);
+        var rtRGBM = RenderTexture.GetTemporary(tw, th, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
+        var rtRGBD = RenderTexture.GetTemporary(tw, th, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Linear);
 
-        Graphics.Blit(null, rtLDR, _material, 0);
-        Graphics.Blit(null, rtHDR, _material, 1);
+        Graphics.Blit(null, rtHDR,  _material, 0);
+        Graphics.Blit(null, rtRGBM, _material, 1);
+        Graphics.Blit(null, rtRGBD, _material, 2);
 
-        _material.SetTexture("_RefTex", rtHDR);
-        Graphics.Blit(rtLDR, destination, _material, 2);
+        _material.SetTexture("_HDRTex", rtHDR);
+        _material.SetTexture("_RGBMTex", rtRGBM);
+        _material.SetTexture("_RGBDTex", rtRGBD);
+        Graphics.Blit(null, destination, _material, 3);
 
-        RenderTexture.ReleaseTemporary(rtLDR);
         RenderTexture.ReleaseTemporary(rtHDR);
+        RenderTexture.ReleaseTemporary(rtRGBM);
+        RenderTexture.ReleaseTemporary(rtRGBD);
     }
 }
